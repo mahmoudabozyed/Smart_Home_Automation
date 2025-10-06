@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;GPIO/comman_macros&apos; to &apos;comman_macros.h&apos;" description="Rename resource &apos;comman_macros&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="comman_macros" name="comman_macros.h" stamp="1758199427955" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;GPIO/comman_macros.h&apos; to &apos;common_macros.h&apos;" description="Rename resource &apos;comman_macros.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="comman_macros.h" name="common_macros.h" stamp="1758199469929" updateReferences="true"/>
-</session>
