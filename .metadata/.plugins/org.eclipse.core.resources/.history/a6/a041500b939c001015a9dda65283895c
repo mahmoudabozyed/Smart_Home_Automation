@@ -1,0 +1,121 @@
+#include "MCAL/ADC/ADC.h"
+#include "HAL/LCD/LCD.h"
+#include "MCAL/PWM/PWM.h"
+#include "HAL/DCMotor/DCMotor.h"
+#include "HAL/LDR/LDR.h"
+#include "HAL/LM35/LM35.h"
+#include "HAL/Flame_sensor/Flame.h"
+#include "HAL/LED/LED.h"
+#include "MCAL/GPIO/common_macros.h"
+#include "MCAL/GPIO/std_type.h"
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+	uint16 light;
+	uint16 data;
+	uint8  temp;
+	ADC_init();
+	FlameSensor_init();
+	LCD_init();
+	DcMotor_Init();
+	Buzzer_init();
+
+	LCD_displayStringRowColumn(0,3,"FAN is ");
+	LCD_displayStringRowColumn(1,0,"Temp= ");
+	LCD_displayStringRowColumn(1,8,"LDR= ");
+
+
+    while(1)
+    {
+    	light = LDR_getLightIntensity();
+
+    	if(light == 1)
+    	{
+    		light = 0;
+    	}
+
+    	data = ADC_readchannel(1);
+    	temp = temperature(data);
+
+    	LCD_moveCursor(1,5);
+		LCD_intgerToString(temp);
+		LCD_displayString(" ");
+
+		LCD_moveCursor(1,12);
+		LCD_intgerToString(light);
+		LCD_displayString("% ");
+
+		if(temp >= 40)
+		{
+			DcMotor_Rotate(CW,100);
+			LCD_displayStringRowColumn(0,10,"ON ");
+		}
+		else if((temp >= 35) && (temp < 40))
+		{
+			DcMotor_Rotate(CW,75);
+			LCD_displayStringRowColumn(0,10,"ON ");
+		}
+		else if((temp >= 30) && (temp < 35))
+		{
+			DcMotor_Rotate(CW,50);
+			LCD_displayStringRowColumn(0,10,"ON ");
+		}
+		else if((temp >= 25) && (temp < 30))
+		{
+			DcMotor_Rotate(CW,25);
+			LCD_displayStringRowColumn(0,10,"ON ");
+		}
+		else if(temp < 25)
+		{
+			DcMotor_Rotate(Stop,0);
+			LCD_displayStringRowColumn(0,10,"OFF");
+		}
+
+
+
+    	if(15 > light)
+    	{
+    		LED_on(RED_LED);
+    		LED_on(GREEN_LED);
+    		LED_on(BLUE_LED);
+    	}
+    	else if((16 <= light) && (50 >= light))
+    	{
+    		LED_off(BLUE_LED);
+    		LED_on(RED_LED);
+    		LED_on(GREEN_LED);
+    	}
+    	else if((51 <= light) && (70 >= light))
+    	{
+    		LED_off(BLUE_LED);
+    		LED_on(RED_LED);
+    		LED_off(GREEN_LED);
+    	}
+    	else if(70 < light)
+    	{
+    		LED_off(BLUE_LED);
+    		LED_off(RED_LED);
+    		LED_off(GREEN_LED);
+    	}
+
+
+		if(FlameSensor_getValue() == HIGH)
+		{
+			Buzzer_off();
+			LCD_clearScreen();
+			LCD_moveCursor(0,0);
+			LCD_displayStringRowColumn(0,3,"FAN is ");
+			LCD_displayStringRowColumn(1,0,"Temp= ");
+			LCD_displayStringRowColumn(1,8,"LDR= ");
+
+
+		}
+
+
+
+    }
+
+}

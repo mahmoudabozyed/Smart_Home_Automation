@@ -1,0 +1,53 @@
+/******************************************************************************
+ *
+ * Module: GPIO
+ *
+ * File Name: gpio.c
+ *
+ * Description: Header file for the AVR GPIO driver
+ *
+ * Author: Mahmoud Abouzeid
+ *
+ *******************************************************************************/
+#include "common_macros.h"
+#include "GPIO.h"
+#include <avr/io.h>
+
+void GPIO_setupPinDirection(uint8 port_num, uint8 pin_num,pinDirection status){
+	if((port_num > NUM_OF_PORTS)|| (pin_num > NUM_OF_PIN_PER_PORT)){
+
+	}else{
+		switch(port_num){
+		case PORTA_ID:
+			if(status == pin_output){
+				SET_BIT(DDRA, pin_num);
+			}else{
+				CLEAR_BIT(DDRA, pin_num);
+			}
+			break;
+		case PORTB_ID:
+			if(status == pin_output){
+				SET_BIT(DDRB, pin_num);
+			}else{
+				CLEAR_BIT(DDRB, pin_num);
+			}
+			break;
+		case PORTC_ID:
+			if(status == pin_output){
+				SET_BIT(DDRC, pin_num);
+			}else{
+				CLEAR_BIT(DDRC, pin_num);
+			}
+			break;
+		case PORTD_ID:
+			if(status == pin_output){
+				SET_BIT(DDRD, pin_num);
+			}else{
+				CLEAR_BIT(DDRD, pin_num);
+			}
+			break;
+		}
+	}
+}
+
+

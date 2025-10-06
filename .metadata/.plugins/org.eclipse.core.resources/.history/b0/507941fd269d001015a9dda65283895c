@@ -1,0 +1,120 @@
+
+
+
+#include "MCAL/ADC/ADC.h"
+#include "HAL/LCD/LCD.h"
+#include "MCAL/PWM/PWM.h"
+#include "HAL/DCMotor/DCMotor.h"
+#include "HAL/LDR/LDR.h"
+#include "HAL/LM35/LM35.h"
+#include "HAL/Flame_sensor/Flame.h"
+#include "HAL/LED/LED.h"
+#include "HAL/BUZZER/Buzzer.h"
+#include "MCAL/GPIO/common_macros.h"
+#include "MCAL/GPIO/std_type.h"
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void) {
+	uint16 light_intensity;
+	uint8 temperature;
+	uint8 flame_detected;
+
+	/* ================= Initialization ================= */
+	ADC_init();          // Initialize ADC for sensors
+	FlameSensor_init();  // Initialize flame sensor
+	LCD_init();          // Initialize LCD
+	DcMotor_Init();      // Initialize DC motor
+	Buzzer_init();       // Initialize buzzer
+	LEDS_init();         // Initialize LEDs
+
+	/* Display static labels on LCD */
+	LCD_displayStringRowColumn(0, 3, "FAN is ");
+	LCD_displayStringRowColumn(1, 0, "Temp= ");
+	LCD_displayStringRowColumn(1, 9, "LDR= ");
+
+	while (1) {
+		/* ================= Fire Detection (Highest Priority) ================= */
+		flame_detected = FlameSensor_getValue();
+		if (flame_detected == HIGH) {
+			Buzzer_on();  // Turn ON buzzer if fire is detected
+			LCD_clearScreen();
+			LCD_displayStringRowColumn(0, 3, "CRITICAL ALERT!");
+			LCD_displayStringRowColumn(1, 1, "FIRE DETECTED!");
+			_delay_ms(1000);
+			continue;  // Skip the rest and keep alert active
+		} else {
+			Buzzer_off();  // Turn OFF buzzer when no fire
+			/* Restore default LCD display */
+			LCD_displayStringRowColumn(0, 3, "FAN is ");
+			LCD_displayStringRowColumn(1, 0, "Temp= ");
+			LCD_displayStringRowColumn(1, 9, "LDR= ");
+		}
+
+		/* ================= Read Sensors ================= */
+		light_intensity = LDR_getLightIntensity();  // Get light intensity (0–100%)
+		temperature = LM35_getTemperature();        // Get room temperature in °C
+
+		/* ================= Update LCD with Sensor Values ================= */
+		// Show temperature
+		LCD_moveCursur(1, 6);
+		if (temperature < 100)
+			LCD_displayString(" ");  // Add spacing for alignment
+		LCD_moveCursur(1, 6);
+		LCD_itos(temperature);       // Display temperature value
+		LCD_displayString("C");
+
+		// Show light intensity
+		LCD_moveCursur(1, 14);
+		if (light_intensity < 100)
+			LCD_displayString(" ");  // Add spacing for alignment
+		LCD_moveCursur(1, 14);
+		LCD_itos(light_intensity);   // Display LDR value
+		LCD_displayString("%");
+
+		/* ================= Fan Control (based on temperature) ================= */
+		LCD_moveCursur(0, 10);
+		if (temperature >= 40) {
+		    DcMotor_Rotate(CW, 100);    // Fan at 100% speed
+		    LCD_displayString("ON ");
+		} else if (temperature >= 35) {
+		    DcMotor_Rotate(CW, 75);     // Fan at 75% speed
+		    LCD_displayString("ON ");
+		} else if (temperature >= 30) {
+		    DcMotor_Rotate(CW, 50);     // Fan at 50% speed
+		    LCD_displayString("ON ");
+		} else if (temperature >= 25) {
+		    DcMotor_Rotate(CW, 25);     // Fan at 25% speed
+		    LCD_displayString("ON ");
+		} else {
+		    DcMotor_Rotate(Stop, 0);    // Fan OFF
+		    LCD_displayString("OFF");
+		}
+
+		/* ================= LED Control (based on light intensity) ================= */
+		if (light_intensity < 15) {
+			// Very dark → Turn ON all LEDs
+			LED_on(RED_LED);
+			LED_on(GREEN_LED);
+			LED_on(BLUE_LED);
+		} else if (light_intensity <= 50) {
+			// Medium low light → Red + Green ON, Blue OFF
+			LED_on(RED_LED);
+			LED_on(GREEN_LED);
+			LED_off(BLUE_LED);
+		} else if (light_intensity <= 70) {
+			// Medium high light → Only Red ON
+			LED_on(RED_LED);
+			LED_off(GREEN_LED);
+			LED_off(BLUE_LED);
+		} else {
+			// Bright light → All LEDs OFF
+			LED_off(RED_LED);
+			LED_off(GREEN_LED);
+			LED_off(BLUE_LED);
+		}
+
+		_delay_ms(500);  // Small delay for stability
+	}
+}

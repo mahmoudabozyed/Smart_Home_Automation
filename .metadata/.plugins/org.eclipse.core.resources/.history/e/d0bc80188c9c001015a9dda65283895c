@@ -1,0 +1,24 @@
+/******************************************************************************
+ *
+ * Module: FLAME
+ *
+ * File Name: flame.h
+ *
+ * Description: source file for the flame driver
+ *
+ * Author: Mahmoud Abouzeid
+ *
+ *******************************************************************************/
+
+#include "FLAME.h"
+#include "GPIO.h"
+
+void FlameSensor_init(void){
+	GPIO_setupPinDirection(FLAME_SENSOR_PORT, FLAME_SENSOR_PIN, pin_output);
+}
+
+
+uint8 FlameSensor_getValue(void){
+	uint8 FlameSensorValue = GPIO_readPin(FLAME_SENSOR_PORT, FLAME_SENSOR_PIN);
+	return FlameSensorValue;
+}

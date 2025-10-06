@@ -1,0 +1,26 @@
+/******************************************************************************
+ *
+ * Module: BUZZER
+ *
+ * File Name: BUZZER.h
+ *
+ * Description: Header file for the BUZZER driver
+ *
+ * Author: Mahmoud Abouzeid
+ *
+ *******************************************************************************/
+
+#ifndef BUZZER_H_
+#define BUZZER_H_
+
+
+#define BUZZER_PORT		PORTD_ID
+#define BUZZER_PIN		PIN3_ID
+
+
+void Buzzer_init(void);
+void Buzzer_on(void) ;
+void Buzzer_off(void);
+
+
+#endif /* BUZZER_H_ */

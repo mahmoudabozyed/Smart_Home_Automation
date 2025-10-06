@@ -1,0 +1,40 @@
+
+/******************************************************************************
+*
+* Module: LDR
+*
+* File Name: LDR.h
+*
+* Description: Header file for the LDR driver
+*
+* Author: Mahmoud Abouzeid
+*
+*******************************************************************************/
+
+#ifndef LDR_H_
+#define LDR_H_
+
+#include "../../MCAL/GPIO/std_type.h"
+
+
+/*******************************************************************************
+*                                Definitions                                  *
+*******************************************************************************/
+
+#define LDR_PORT_ID		 	 			PORTA_ID
+#define LDR_PIN_ID			 			PIN0_ID
+
+#define LDR_SENSOR_CHANNEL_ID			0
+#define LDR_SENSOR_MAX_VOLT_VALUE		2.56
+#define LDR_SENSOR_MAX_LIGHT_INTENSITY	100u
+
+/*******************************************************************************
+*                      Functions Prototypes                                   *
+*******************************************************************************/
+
+/*
+ * Reads the LDR sensor value and returns the light intensity
+ */
+uint16 LDR_getLightIntensity(void);
+
+#endif /* LDR_H_ */

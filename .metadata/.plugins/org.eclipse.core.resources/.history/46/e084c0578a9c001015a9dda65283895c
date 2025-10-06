@@ -1,0 +1,16 @@
+22:24:13 **** Incremental Build of configuration Debug for project GPIO ****
+make all 
+Building file: ../GPIO.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=16000000UL -MMD -MP -MF"GPIO.d" -MT"GPIO.o" -c -o "GPIO.o" "../GPIO.c"
+Finished building: ../GPIO.c
+ 
+Building target: GPIO.elf
+Invoking: AVR C Linker
+avr-gcc -Wl,-Map,GPIO.map -mmcu=atmega32 -o "GPIO.elf"  ./GPIO.o   
+c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm32.o:(.init9+0x0): undefined reference to `main'
+make: *** [GPIO.elf] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+
+22:24:13 Build Failed. 2 errors, 0 warnings. (took 516ms)
+

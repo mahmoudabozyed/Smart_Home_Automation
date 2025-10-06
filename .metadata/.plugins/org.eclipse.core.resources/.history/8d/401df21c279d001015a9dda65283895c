@@ -1,0 +1,49 @@
+/******************************************************************************
+ *
+ * Module: DC Motor
+ *
+ * File Name: motor.c
+ *
+ * Description: Source file for the DC Motor driver
+ *
+ * Author: Mahmoud Abouzeid
+ *
+ *******************************************************************************/
+#include "DCMotor.h"
+#include "../../MCAL/GPIO/GPIO.h"
+#include "../../MCAL/PWM/PWM.h"
+
+void DcMotor_Init(void){
+	GPIO_setupPinDirection(MOTOR_PORT_IN1, MOTOR_PIN_IN1, pin_output);
+	GPIO_setupPinDirection(MOTOR_PORT_IN2, MOTOR_PIN_IN2, pin_output);
+
+	GPIO_setupPinDirection(MOTOR_PORT_EN1, MOTOR_PIN_EN1, pin_output);
+
+	GPIO_writePin(MOTOR_PORT_IN1, MOTOR_PIN_IN1, LOW);
+	GPIO_writePin(MOTOR_PORT_IN2, MOTOR_PIN_IN2, LOW);
+
+	PWM_Timer0_Start(0);
+}
+
+
+
+void DcMotor_Rotate(DcMotor_State state, uint8 speed){
+	switch (state){
+	case Stop:
+		GPIO_writePin(MOTOR_PORT_IN1, MOTOR_PIN_IN1, LOW);
+		GPIO_writePin(MOTOR_PORT_IN2, MOTOR_PIN_IN2, LOW);
+		break;
+	case CW:
+		GPIO_writePin(MOTOR_PORT_IN1, MOTOR_PIN_IN1, HIGH);
+		GPIO_writePin(MOTOR_PORT_IN2, MOTOR_PIN_IN2, LOW);
+		break;
+	case A_CW:
+		GPIO_writePin(MOTOR_PORT_IN1, MOTOR_PIN_IN1, LOW);
+		GPIO_writePin(MOTOR_PORT_IN2, MOTOR_PIN_IN2, HIGH);
+		break;
+	}
+
+
+	PWM_Timer0_Start(speed);
+}
+

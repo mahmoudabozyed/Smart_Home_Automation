@@ -1,0 +1,39 @@
+/******************************************************************************
+*
+* Module: FLAME
+*
+* File Name: FLAME.h
+*
+* Description: Header file for the flame driver
+*
+* Author: Mahmoud Abouzeid
+*
+*******************************************************************************/
+
+#ifndef FLAME_H_
+#define FLAME_H_
+
+#include "../../MCAL/GPIO/std_type.h"
+
+/*******************************************************************************
+*                                Definitions                                  *
+*******************************************************************************/
+
+#define FLAME_SENSOR_PORT	PORTD_ID
+#define FLAME_SENSOR_PIN	PIN2_ID
+
+/*******************************************************************************
+*                      Functions Prototypes                                   *
+*******************************************************************************/
+
+/*
+ * Initializes the flame sensor pin direction.
+ */
+void FlameSensor_init(void);
+
+/*
+ * Reads the value from the flame sensor and returns it.
+ */
+uint8 FlameSensor_getValue(void);
+
+#endif /* FLAME_FLAME_H_ */
